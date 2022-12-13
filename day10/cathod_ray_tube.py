@@ -30,8 +30,7 @@ def draw_screen():
     screen = []
     for i in range(6):
         row = []
-        for j in range(40):
-            row.append(".")
+        [row.append(" ") for j in range(40)]
         screen.append(row)
     return screen
 
