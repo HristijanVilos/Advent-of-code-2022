@@ -11,7 +11,6 @@ def find_same_chars(compartment_1, compartment_2):
         for char_2 in set(compartment_2):
             if char == char_2:
                 same_chars.append(char_2)
-
     return same_chars
 
 
