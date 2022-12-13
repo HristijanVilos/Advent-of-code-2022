@@ -40,8 +40,8 @@ def part_1():
         result = 0
         for line in file:
             first_elf, second_elf = get_two_elfs(line)
-            first_elf_clean = sections_ID_for_elf(first_elf)
-            second_elf_clean = sections_ID_for_elf(second_elf)
+            first_elf_clean = sections_ID_for_elf_list(first_elf)
+            second_elf_clean = sections_ID_for_elf_list(second_elf)
             if (first_elf_clean in second_elf_clean)\
                     or (second_elf_clean in first_elf_clean):
                 result += 1
@@ -58,7 +58,7 @@ def part_2():
             second_elf_clean = sections_ID_for_elf_list(second_elf)
             if are_sections_overlaping(first_elf_clean, second_elf_clean):
                 result += 1
-   
+
         return result
 
 
