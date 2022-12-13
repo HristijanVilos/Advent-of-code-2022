@@ -43,9 +43,7 @@ def draw_pixel(cycle, X, screen: list[list[str]]):
 
 
 def join_and_print(screen):
-    for row in screen:
-        x = "".join(row)
-        print(x)
+    [print("".join(row)) for row in screen]
 
 
 def part_1():
@@ -60,7 +58,6 @@ def part_1():
                 num_add = int(line.strip().split(" ")[1])
             else:
                 num_add = 0
-
             X, cycle = go_through_cycle(X, cycle, program_cycle,
                                         instruction, num_add, screen)
         print("Part 2:")
