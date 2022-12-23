@@ -1,5 +1,5 @@
 import re
-import time
+
 
 def can_reach(sensor: tuple, d, row_y):
     return d > abs(sensor[1] - row_y)
@@ -19,30 +19,27 @@ def create_points(s: tuple, d, row_y, beacons, result_set):
             result_set.add((i, row_y))
 
 
-def create_perimtar(sensor, d, result_set: set, MAX_X):
+def create_perimtar(sensor, d, perimetar_set: set, MAX_X):
+    min_x, max_x = sensor[0] - d, sensor[0] + d
     min_y, max_y = sensor[1] - d, sensor[1] + d
     test = False
-    y1, y2 = sensor[0], sensor[0]
-    for i, x in enumerate(range(min_y, max_y)):
-
+    x1, x2 = sensor[0], sensor[0]
+    for i, y in enumerate(range(min_y, max_y)):
         if not test:
-            y1 = y1 + 1 
-            y2 = y2 - 1
-            if y1 == max_y and y2 == min_y:
+            x1 = x1 + 1
+            x2 = x2 - 1
+            if x1 == min_x and x2 == max_x:
                 test = True
         else:
-            y1 = y1 - 1
-            y2 = y2 + 1
-        up = (y1 ,x)
-        dp = (y2, x)
-
-        if i < 0 or i > MAX_X:
+            x1 = x1 - 1
+            x2 = x2 + 1
+        if y < 0 or y > MAX_X:
             continue
         else:
-            if y1 > -50 or y1 < MAX_X:
-                result_set.add(up)
-            if y2 > -40 or y2 < MAX_X:
-                result_set.add(dp)
+            if x1 > 0 or x1 < MAX_X:
+                perimetar_set.add((x1, y))
+            if x2 > 0 or x2 < MAX_X:
+                perimetar_set.add((x2, y))
 
 
 def can_sensor_reach(sensor, d, p):
@@ -67,7 +64,7 @@ def part_1():
 
 
 def part_2():
-    min_x, MAX_X = 0, 4000000
+    MAX_X = 4000000
     sensors = {}
     beacons = {}
     with open("input.txt", "r") as file:
@@ -76,19 +73,15 @@ def part_2():
             d = abs(y-z) + abs(x-w)
             sensors[(y, x)] = d
             beacons[(z, w)] = True
-        result_set = set()
 
-        # result_set site tocki od site perimetri,
-        # provervam site tocki okolu parametarot dali mozi nekoj sensor da  gi stigni
-        # ako da continue
-        # ako NE ta e tockata!
+        perimetar_set = set()
         for sensor, d in sensors.items():
             print(sensor)
-            create_perimtar(sensor, d, result_set, MAX_X)
-        print(len(result_set))
-        # print(result_set)
-        for r in result_set:
-            points = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
+            create_perimtar(sensor, d, perimetar_set, MAX_X)
+
+        for r in perimetar_set:
+            points = [(1, 0), (1, 1), (0, 1), (-1, 1),
+                      (-1, 0), (-1, -1), (0, -1), (1, -1)]
             new_points = []
             for p in points:
                 new_points.append((r[0]+p[0], r[1]+p[1]))
@@ -104,8 +97,6 @@ def part_2():
                 if not test:
                     return x[0]*4000000 + x[1]
 
-# print("Part 1:", part_1())
-start = time.time()
+
+print("Part 1:", part_1())
 print("Part 2:", part_2())
-end = time.time()
-print(end - start)
