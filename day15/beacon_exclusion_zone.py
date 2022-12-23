@@ -1,6 +1,18 @@
 import re
 
 
+def parse_file():
+    sensors = {}
+    beacons = {}
+    with open("input.txt", "r") as file:
+        for line in file:
+            y, x, z, w = [int(_) for _ in re.findall(r'-?\d+', line.strip())]
+            d = abs(y-z) + abs(x-w)
+            sensors[(y, x)] = d
+            beacons[(z, w)] = True
+    return sensors, beacons
+
+
 def can_reach(sensor: tuple, d, row_y):
     return d > abs(sensor[1] - row_y)
 
@@ -53,48 +65,33 @@ def can_sensor_reach(sensor, d, p):
 
 def part_1():
     row_y = 2000000
-    sensors = {}
-    beacons = {}
-    with open("input.txt", "r") as file:
-        for line in file:
-            y, x, z, w = [int(_) for _ in re.findall(r'-?\d+', line.strip())]
-            d = abs(y-z) + abs(x-w)
-            sensors[(y, x)] = d
-            beacons[(z, w)] = True
-        result_set = set()
-        for sensor, d in sensors.items():
-            if can_reach(sensor, d, row_y):
-                create_points(sensor, d, row_y, beacons, result_set)
-        return len(result_set)
+    sensors, beacons = parse_file()
+    result_set = set()
+    for sensor, d in sensors.items():
+        if can_reach(sensor, d, row_y):
+            create_points(sensor, d, row_y, beacons, result_set)
+    return len(result_set)
 
 
 def part_2():
     MIN_X, MAX_X = 0, 4000000
-    sensors = {}
-    beacons = {}
-    with open("input.txt", "r") as file:
-        for line in file:
-            y, x, z, w = [int(_) for _ in re.findall(r'-?\d+', line.strip())]
-            d = abs(y-z) + abs(x-w)
-            sensors[(y, x)] = d
-            beacons[(z, w)] = True
+    sensors, beacons = parse_file()
+    perimetar_set = set()
+    for sensor, d in sensors.items():
+        create_outer_perimetar(sensor, d+1, perimetar_set, MIN_X, MAX_X)
 
-        perimetar_set = set()
+    perimetar_list = list(perimetar_set)
+
+    for x in perimetar_list:
+        test = False
+        if x[0] < MIN_X or x[1] < MIN_X or x[0] > MAX_X or x[1] > MAX_X:
+            continue
         for sensor, d in sensors.items():
-            create_outer_perimetar(sensor, d+1, perimetar_set, MIN_X, MAX_X)
-
-        perimetar_list = list(perimetar_set)
-
-        for x in perimetar_list:
-            test = False
-            if x[0] < MIN_X or x[1] < MIN_X or x[0] > MAX_X or x[1] > MAX_X:
-                continue
-            for sensor, d in sensors.items():
-                test = test or can_sensor_reach(sensor, d, x)
-                if test:
-                    break
-            if not test:
-                return x[0]*4000000 + x[1]
+            test = test or can_sensor_reach(sensor, d, x)
+            if test:
+                break
+        if not test:
+            return x[0]*4000000 + x[1]
 
 
 print("Part 1:", part_1())
