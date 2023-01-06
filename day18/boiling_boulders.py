@@ -66,7 +66,7 @@ def parse():
                 for line in file]
 
 
-def part_1(cubes: set[tuple]):
+def part_1(cubes: list[tuple]):
     count = 0
     num_of_cubes = len(cubes)
     for i in range(num_of_cubes):
@@ -79,7 +79,7 @@ def part_1(cubes: set[tuple]):
     return (total_sides - 2*count)
 
 
-def part_2(cubes: set[tuple]):
+def part_2(cubes: list[tuple]):
     start_pos = starting_position(cubes)
     end_pos = ending_position(cubes)
     grid = create_grid(start_pos, end_pos)
